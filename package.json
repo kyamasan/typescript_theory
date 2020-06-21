@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/kyamasan/typescript_theory/issues"
   },
-  "homepage": "https://github.com/kyamasan/typescript_theory#readme"
+  "homepage": "https://github.com/kyamasan/typescript_theory#readme",
+  "devDependencies": {
+    "typescript": "^3.7.5"
+  }
 }
