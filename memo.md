@@ -14,6 +14,10 @@ Javascript で書けるコードは全て TypeScript で書き直せる。
 
 ~ブランチの作成とチェックアウトを同時に行ってくれる。
 
+> git branch --contains=HEAD
+
+現在のブランチを確認
+
 > git add .
 
 > git reset HEAD/git reset HEAD file_name
@@ -89,6 +93,20 @@ tsc コマンドで.ts ファイルを.js ファイルに変換し、それを n
 
 > npx ts-node src/install-typescript.ts
 
+### ts-node のバージョンが 8.6.0 以上だと、ts-node-dev でエラーが表示されない不具合
+
+ts-node のバージョン一覧を確認
+
+> npm info ts-node versions
+
+8.6.2 をアンインストール
+
+> npm uninstall --save-dev ts-node
+
+8.5.4 を再度インストール
+
+> npm install --save-dev ts-node@8.5.4
+
 ### ts-node-dev
 
 https://github.com/whitecolor/ts-node-dev
@@ -145,6 +163,10 @@ npx ts-node-dev...のようなコマンドは、度々使用する為、あら�
 "prettier.singleQuote": true
 ```
 
+- markdown ファイルのプレビュー
+
+> Ctrl + Shift + V
+
 ### tsc 実行時設定(tsconfig.json の作成)
 
 https://www.typescriptlang.org/docs/handbook/tsconfig-json.html
@@ -163,4 +185,19 @@ https://www.typescriptlang.org/docs/handbook/tsconfig-json.html
 {
   "typescript.tsdk": "node_modules\\typescript\\lib"
 }
+```
+
+### echo コマンドで.ts ファイルを作成
+
+> echo 'export {};' > src/boolern.ts
+
+### プリミティブ型
+
+- boolean
+
+```
+let isFinished: boolean = true;
+isFinished = false;
+//isFinished = 1;
+console.log({ isFinished });
 ```
