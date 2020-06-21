@@ -73,3 +73,15 @@ typescriptを導入したことでtscコマンド(コンパイルを行う為の
 - tips npxコマンドを使用すれば、node-modules配下を検索して自動で実行してくれる。
 
 >npm tsc src/install-typescript.ts
+
+### ts-node
+
+https://github.com/TypeStrong/ts-node
+
+tscコマンドで.tsファイルを.jsファイルに変換し、それをnodeで実行するまでを1コマンドで実行できる。
+
+> npm info ts-node
+
+> npm install --save-dev ts-node@8.6.2
+
+> npx ts-node src/install-typescript.ts
