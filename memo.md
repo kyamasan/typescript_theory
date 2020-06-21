@@ -8,20 +8,31 @@ TypeScriptがJavacsriptを包含することを意味している。
 Javascriptで書けるコードは全てTypeScriptで書き直せる。
 
 ### 環境構築
-git checkout -b ~
+>git checkout -b ~
+
 ~ブランチの作成とチェックアウトを同時に行ってくれる。
 
-git add .
+>git add .
 
-(git status)
+>git reset HEAD/git reset HEAD file_name
 
-git commit -m "~"
+誤ってaddした場合にはこのコマンド
 
-git push -u origin HEAD
-push 先のリモートブランチが、push 成功時に上流ブランチとして設定される。
+>git status
+
+git addした内容の確認
+
+>git commit -m "~"
+
+>git push -u origin HEAD
+
+>git
+
+uオプションを指定すると、push 先のリモートブランチが、push 成功時に上流ブランチとして設定される。
 上流ブランチを設定することで、git push、git pull  のときにレポジトリ、ブランチの引数を省略できる。
 
-npm init -y
+>npm init -y
+
 package.jsonの作成(-yを付けるとyesnoの問い合わせがなくなる。)
 
 ### TypeScriptのインストール
