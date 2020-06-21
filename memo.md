@@ -85,3 +85,37 @@ tscコマンドで.tsファイルを.jsファイルに変換し、それをnode�
 > npm install --save-dev ts-node@8.6.2
 
 > npx ts-node src/install-typescript.ts
+
+
+### ts-node-dev
+
+https://github.com/whitecolor/ts-node-dev
+
+>Compiles your TS app and restarts when files are modified.
+
+.tsファイルを変更するたびに自動でコンパイルしてくれる機能
+
+>npm info ts-node-dev
+
+>npm install --save-dev ts-node-dev@1.0.0-pre.44
+
+>npx ts-node-dev --respawn src/install-typescript.ts
+
+--respawn ファイルの変更を検知してコンパイルを行うオプション
+
+(未使用)
+--transpileOnly コンパイルのみ行い、実行は行わないようにするオプション
+
+### psckage.jsonのタスクに登録する
+
+npx ts-node-dev...のようなコマンドは、度々使用する為、あらかじめタスクに登録しておく。
+
+```
+"scripts": {
+    "dev": "ts-node-dev --respawn",
+    ...
+},
+```
+
+登録したタスクは、npm run ~ で使用できる。
+>npm run dev src\install-typescript.ts
