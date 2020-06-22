@@ -193,6 +193,8 @@ https://www.typescriptlang.org/docs/handbook/tsconfig-json.html
 
 ### 型
 
+変数に対して、: 型名で型を指定することができる。これをアノテーションと呼ぶ。
+
 - boolean
 
 ```
@@ -271,3 +273,251 @@ let data: Article[] = response.data;
 
 - void
   何もデータが存在しない時に使用
+
+```
+//undefinedを書く場合、returnをしなければならない。
+function returnNothing(): undefined {
+  return;
+}
+
+//returnがないメソッドを書く場合は、voidを型指定する必要がある。
+function returnNothing(): void {
+
+}
+```
+
+- null, undefined
+
+- never
+  必ず例外が起きる型。呼び出し元に戻ってこない(never)唯一の型。
+  void 型は呼び出し元には値は返さないが戻ってくる。
+
+```
+function error(message: string): never {
+  throw new Error(message);
+}
+
+try {
+  error('test');
+} catch (error) {
+  console.log({ error });
+}
+```
+
+- object
+  {}で囲まれたデータなら何でも格納できる。(絞り込みが甘い)
+  絞り込みを強化するには、object でなく{}を使い、プロパティに対して型指定を行う。
+
+```
+let profile1: object = { name: 'Ham' }; //絞り込みが甘い
+let profile1: {} = { name: 'Ham' }; //絞り込みが甘い
+
+let profile2: {
+  name: string;
+} = { name: 'Ham' }; //絞り込みが強い
+```
+
+### alias
+
+string 型の alias を作る場合
+
+```
+const example1 = {
+  name: 'Ham',
+  age: 43,
+};
+
+//type の後に書く別名は必ず大文字にして、右辺に別名を付けたい型を指定する。
+//複雑な型にも別名(Profile)を付けることで見た目をシンプルにすることができる。
+//しかし、example1の型を書き写す際にミスが発生し得る事、example1を変更した際に追従できない点がこの書き方のデメリット。
+type Profile = {
+  name: string;
+  age: number;
+};
+↓
+//この書き方の方がミスが起きにくい&変化に追従できるのでベター
+//example1のデータ型をProfile2として別名を付ける
+type Profile2 = typeof example1;
+
+const example2: Profile2 = {
+  name: 'Ham',
+  age: 43,
+};
+```
+
+### interface
+
+```
+type ObjectType = {
+  name: string;
+  age: number;
+};
+
+// typeと違って別名を付けるわけではないので、
+// インターフェース単独で名前を付けることができる(その為、＝は不要)
+interface ObjectInterface {
+  name: string;
+  age: number;
+}
+
+let object: ObjectInterface = {
+  name: 'Ham',
+  age: 43,
+};
+```
+
+### 型安全の利点
+
+TypeScript のコンパイラによって、不正な型を代入することによるエラーを実行前に検知できる。
+Javascript にはコンパイルという工程も、型チェックという概念もないし、実行時エラーもない。
+型安全を確保する仕組みを導入し、型安全を確保することが、TypeScript を導入する最大のモチベーション。
+
+### unknown 型、タイプガード
+
+型安全な any 型
+
+any 型の変数には足し算を行ったりすることが可能。もし any 型の変数に number 型以外の値が入ってきたら、
+Javascript 実行時にエラーになってしまう。(実行するまで分からないので危険)
+any ではなく、UnKnown 型を指定することで不正な計算がそのまま行われることを防ぎ、
+typeof を使って確実に計算ができる状況を担保することができる。
+この、typeof を使って特定の型であることを確認しながらコードを安全に実行することをタイプガード、と呼ぶ。
+
+```
+const kansu = (): number => 43;
+
+let numberAny: any = kansu();
+let numberUnknown: unknown = kansu();
+
+let sumAny = numberAny + 10;
+// let sumUnknown = numberUnknown + 10; エラー
+if (typeof numberUnknown === 'number') {
+  let sumUnknown = numberUnknown + 10;
+}
+```
+
+### intersection 型(交差型)
+
+既存の型を活かしつつ、新たな型を合理的に作っていく方法。
+Batter1 には throwingSpeed という属性を持たせることはできないので、新たな型を定義する必要がある。
+その際、一から型を設定するのではなく、intersection 型を用いれば、よりスマートに新たな型を再定義できる。
+
+```
+type Pitcher1 = {
+  throwingSpeed: number;
+};
+
+type Batter1 = {
+  battingAverage: number;
+};
+
+const Tanaka: Pitcher1 = {
+  throwingSpeed: 154,
+};
+
+const ichiro: Batter1 = {
+  // throwingSpeed: 140
+  battingAverage: 0.367,
+};
+
+// type TwoWayPlayer = {
+//   throwingSpeed: number;
+//   battingAverage: number;
+// };
+
+type TwoWayPlayer = Pitcher1 & Batter1;
+
+const Otani: TwoWayPlayer = {
+  throwingSpeed: 165,
+  battingAverage: 0.331,
+};
+```
+
+### Union 型(共用体型)
+
+変数 value に数値と文字列を格納したい。しかし、一度数値を代入すると、文字列型の格納は出来なくなる。
+Union 型を用いることで、複数の型を代入することができる。
+
+```
+let value = 1;
+//value = 'foo'; エラー!
+
+let value: number | string = 1;
+```
+
+### Literal 型
+
+プリミティブ型よりも細かい指定が可能。
+文字列、数値、真偽値の 3 つの Literal 型が存在する。(真偽値の Literal 型はほぼ使わないが)
+
+```
+let dayOfTheWeek: string = '日';
+
+dayOfTheWeek = '月';
+dayOfTheWeek = '31'; //不正な曜日データが設定されたらエラーとしたい。stringでは絞り込みが甘すぎる。
+
+//Literal 型と Union 型を組み合わせることで、変数に入れる値を制限できる。数値、真偽値型も同様。
+let dayOfTheWeek: '日' | '月' | '火' | '水' | '木' | '金' | '土' = '日';
+let month: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 = 1;
+```
+
+### enum 型(列挙型)
+
+数値の列挙型
+January は 1、February は 2、のように順に番号を割りつけたい場合、TypeScript の enum 型では以下のように文字列を列挙するだけで連番で番号が割り振られる。
+enum の変数は複数形にするのがお作法。
+
+```
+enum Months {
+  January,
+  February,
+  March,
+  April,
+  May,
+  June,
+  July,
+  August,
+  September,
+  October,
+  November,
+  December,
+}
+console.log(Months.September); → 8
+
+//JavaScriptで書く場合、valueを明示的に渡さないといけないので、ミスが起こりやすい
+
+const MonthsJs = {
+  January: 0,
+  February: 1,
+  ...
+};
+```
+
+割り振られる番号を 0 ではなく 1 始まりにしたい場合は、先頭の要素に=1 を書けばよいだけ。
+
+```
+enum Months {
+  January = 1,
+  February,
+  ...
+}
+console.log(Months.September); → 9
+```
+
+文字列の列挙型
+文字列の列挙型は必ず＝で初期化する必要がある。
+存在しない要素にアクセスすると Javascript とは異なりエラーになる。
+
+```
+enum COLORS {
+  RED = '#FF0000',
+  WHITE = '#FFFFFF',
+  BLACK = '#000000',
+}
+
+COLORS.YELLOW; エラー！
+
+enum COLORS {
+  YELLOW = '#FFFF00',
+}
+COLORS.YELLOW; アクセス可能
+```
