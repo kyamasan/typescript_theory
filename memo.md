@@ -1,3 +1,5 @@
+## 各種環境設定、基本的な型について
+
 ### TypeScript の特徴
 
 typescript 公式の github
